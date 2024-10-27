@@ -1,18 +1,27 @@
 import java.awt.*;
 import java.util.ArrayList;
-import java.awt.Font;
 
 public class Game {
     private final Bird bird;
     private final ArrayList<Pipe> pipes;
-    Font font = new Font("Arial", Font.BOLD, 48);
+    private int score;
     private boolean gameOver;
 
     public Game() {
         bird = new Bird(100, 300);
         pipes = new ArrayList<>();
         gameOver = false;
-        pipes.add(new Pipe(400, 390, 200, 150));
+        score = 0;
+        pipes.add(new Pipe(400, 100, 200, 100));
+    }
+
+    public void reset() {
+        pipes.clear();
+        pipes.add(new Pipe(400, 100, 200, 100));
+        bird.setY(300);
+        bird.setVelocity(0);
+        score = 0;
+        gameOver = false;
     }
 
     public void update() {
@@ -23,7 +32,8 @@ public class Game {
                 pipe.update();
                 if (pipe.isOffScreen()) {
                     pipes.remove(pipe);
-                    pipes.add(new Pipe(800, 390, (int) (Math.random() * 300) + 100, 150));
+                    pipes.add(new Pipe(800, 100, (int) (Math.random() * 300) + 100, 100));
+                    score++;
                 }
             }
 
@@ -31,29 +41,33 @@ public class Game {
         }
     }
 
+    public int getScore() {
+        return score;
+    }
+
     public Bird getBird() {
         return bird;
     }
 
     private void checkCollisions() {
+        Rectangle birdBounds = new Rectangle(bird.getX(), bird.getY(), 50, 35);
         for (Pipe pipe : pipes) {
-            // Print the positions for debugging
-            // System.out.println("Bird Position: (" + bird.getX() + ", " + bird.getY() + ")");
-            // System.out.println("Pipe Position: (" + pipe.getX() + ", " + pipe.getHeight() + ")");
+            Rectangle topPipeBounds = new Rectangle(pipe.getX(), 0, pipe.getWidth(), pipe.getHeight());
+            Rectangle bottomPipeBounds = new Rectangle(pipe.getX(), pipe.getHeight() + pipe.getGap(), pipe.getWidth(), 600 - (pipe.getHeight() + pipe.getGap()));
 
-            if (bird.getX() + 30 > pipe.getX() && bird.getX() < pipe.getX() + 270 && (bird.getY() < pipe.getHeight() || bird.getY() + 30 > pipe.getHeight() + pipe.getGap())) {
+            if (topPipeBounds.intersects(birdBounds) || bottomPipeBounds.intersects(birdBounds)) {
+                System.out.println("Bird Bounds: " + birdBounds);
+                System.out.println("Top Pipe Bounds: " + topPipeBounds);
+                System.out.println("Bottom Pipe Bounds: " + bottomPipeBounds);
                 gameOver = true;
-                System.out.println("Bird Position: (" + bird.getX() + ", " + bird.getY() + ")");
-                System.out.println("Pipe Position: (" + pipe.getX() + ", " + pipe.getHeight() + ")");
                 System.out.println("Collision detected!");
                 break;
             }
         }
 
-        // Check if the bird is out of bounds
         if (bird.getY() > 570 || bird.getY() < 0) {
-            gameOver = true; // Set game over flag if the bird goes out of the screen
-            System.out.println("Out of bounds!"); // Debug message
+            gameOver = true;
+            System.out.println("Out of bounds!");
         }
     }
 
@@ -64,10 +78,8 @@ public class Game {
         }
         if (gameOver) {
             g.setColor(Color.RED);
-            g.setFont(font);
-            g.drawString("Game Over!", 250, 300);
+            g.setFont(new Font("Botsmatic Outline", Font.BOLD, 48));
+            g.drawString("game over", 250, 300);
         }
     }
-
-
 }
