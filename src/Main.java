@@ -10,8 +10,8 @@ public class Main {
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+        frame.setResizable(false);
 
-        // Game loop using a Timer
         Timer timer = new Timer(20, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 panel.getGame().update();

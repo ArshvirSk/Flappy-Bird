@@ -26,17 +26,12 @@ public class Bird {
 
     public void draw(Graphics g) {
         g.drawImage(birdImage, x, y, 50, 35, null);
-
-        // Debug: Draw bounding box with label
-//        g.setColor(Color.RED);
-//        g.drawRect(x, y, 50, 35); // Bounding box for the bird
-//        g.drawString("Bird", x, y - 5); // Label the box for clarity
     }
 
     public Rectangle getBounds() {
         int width = 50;
         int height = 35;
-        return new Rectangle(x, y, width, height); // Create a bounding box for the bird
+        return new Rectangle(x, y, width, height);
     }
 
     public int getY() {

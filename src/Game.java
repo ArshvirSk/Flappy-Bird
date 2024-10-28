@@ -1,13 +1,18 @@
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Game {
     private final Bird bird;
     private final ArrayList<Pipe> pipes;
+    private final GamePanel gamePanel;
     private int score;
     private boolean gameOver;
 
-    public Game() {
+    public Game(GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
         bird = new Bird(100, 300);
         pipes = new ArrayList<>();
         gameOver = false;
@@ -77,9 +82,55 @@ public class Game {
             pipe.draw(g);
         }
         if (gameOver) {
-            g.setColor(Color.RED);
-            g.setFont(new Font("Botsmatic Outline", Font.BOLD, 48));
-            g.drawString("game over", 250, 300);
+            drawGameOverScreen(g);
         }
     }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void drawGameOverScreen(Graphics g) {
+        g.setColor(Color.RED);
+        g.setFont(new Font("Botsmatic Outline", Font.BOLD, 48));
+        g.drawString("game over", 250, 250);
+
+        JButton playAgainButton = new JButton("play again");
+        playAgainButton.setFont(new Font("Botsmatic Outline", Font.PLAIN, 16));
+        playAgainButton.setBounds(300, 320, 200, 50);
+
+        JButton exitButton = new JButton("exit");
+        exitButton.setFont(new Font("Botsmatic Outline", Font.PLAIN, 16));
+        exitButton.setBounds(300, 420, 200, 50);
+
+        playAgainButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                reset();
+                gamePanel.startGame();
+            }
+        });
+
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+
+        gamePanel.add(playAgainButton);
+        gamePanel.add(exitButton);
+        gamePanel.revalidate();
+        gamePanel.repaint();
+    }
+
+    public void drawScore(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Botsmatic Outline", Font.BOLD, 24));
+        g.drawString("score ", 20, 50);
+        g.setFont(new Font("Flappy Bird Font", Font.BOLD, 24));
+        g.drawString("" + score, 120, 50);
+    }
+
 }
